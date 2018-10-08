@@ -1,0 +1,14 @@
+C:\Users\samir\kali\DotNetApisForAngularProjects\bin\Debug\netcoreapp2.1\DotNetApisForAngularProjects.deps.json
+C:\Users\samir\kali\DotNetApisForAngularProjects\bin\Debug\netcoreapp2.1\DotNetApisForAngularProjects.runtimeconfig.json
+C:\Users\samir\kali\DotNetApisForAngularProjects\bin\Debug\netcoreapp2.1\DotNetApisForAngularProjects.runtimeconfig.dev.json
+C:\Users\samir\kali\DotNetApisForAngularProjects\bin\Debug\netcoreapp2.1\DotNetApisForAngularProjects.dll
+C:\Users\samir\kali\DotNetApisForAngularProjects\bin\Debug\netcoreapp2.1\DotNetApisForAngularProjects.pdb
+C:\Users\samir\kali\DotNetApisForAngularProjects\obj\Debug\netcoreapp2.1\DotNetApisForAngularProjects.csprojAssemblyReference.cache
+C:\Users\samir\kali\DotNetApisForAngularProjects\obj\Debug\netcoreapp2.1\DotNetApisForAngularProjects.csproj.CoreCompileInputs.cache
+C:\Users\samir\kali\DotNetApisForAngularProjects\obj\Debug\netcoreapp2.1\DotNetApisForAngularProjects.RazorAssemblyInfo.cache
+C:\Users\samir\kali\DotNetApisForAngularProjects\obj\Debug\netcoreapp2.1\DotNetApisForAngularProjects.RazorAssemblyInfo.cs
+C:\Users\samir\kali\DotNetApisForAngularProjects\obj\Debug\netcoreapp2.1\DotNetApisForAngularProjects.AssemblyInfoInputs.cache
+C:\Users\samir\kali\DotNetApisForAngularProjects\obj\Debug\netcoreapp2.1\DotNetApisForAngularProjects.AssemblyInfo.cs
+C:\Users\samir\kali\DotNetApisForAngularProjects\obj\Debug\netcoreapp2.1\DotNetApisForAngularProjects.RazorTargetAssemblyInfo.cache
+C:\Users\samir\kali\DotNetApisForAngularProjects\obj\Debug\netcoreapp2.1\DotNetApisForAngularProjects.dll
+C:\Users\samir\kali\DotNetApisForAngularProjects\obj\Debug\netcoreapp2.1\DotNetApisForAngularProjects.pdb
