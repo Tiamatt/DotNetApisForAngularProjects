@@ -1,10 +1,11 @@
 # DotNetApisForAngularProjects app 
-This RESTful web service was developed for PapaJohnsClone and HomeCuisine apps
+This is a RESTful web service built with .NET Core 2.1 for some of my Angular project. <br />
+The APIs are used in the following projects:
 * See [PapaJohnsClone](https://github.com/Tiamatt/PapaJohnsClone) repo
 * See [HomeCuisine](https://github.com/Tiamatt/HomeCuisine) repo
 
 ## Demo
-Web service was deployed to SmarterAsp.Net (moved from Microsoft Azure Cloud) <br />
+This web service is deployed and run on SmarterAsp.Net hosting (moved from Microsoft Azure Cloud) <br />
 <br />
 Example ([link](http://tiamatt.com/api/ppjc/specials)): <br />
 
@@ -38,13 +39,13 @@ Example ([link](http://tiamatt.com/api/ppjc/specials)): <br />
 ```
 
 ## Features
-* ASP.NET Core 2.1 Web API
+* RESTful API design
 * Async/Await approach
 * CORS configuration
 
 ## Built With
-* .NET Core 2.1 Framework
-* Entity Framework Core
+* .NET Core 2.1.0
+* Entity Framework Core 2.1.0
 * C#
 * Visual Studio Code
 
@@ -53,6 +54,7 @@ Install: <br/>
 1. .NET Core CDK <br/> 
 2. Visual Studio Code IDE <br/> 
 3. '.NET Core Extension Pack' extension <br/> 
+
 In order to start the project:
 ```bash
 # download the source code
