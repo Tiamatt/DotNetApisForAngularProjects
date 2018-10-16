@@ -20,7 +20,7 @@ namespace DotNetApisForAngularProjects.Controllers
             this.context = _context;
         }
 
-        #region CRUD -> READ
+        #region CRUD -> READ -> GET LIST (returns list of items)
 
         // GET api/homecuisine
         [HttpGet] // for testing
@@ -53,24 +53,6 @@ namespace DotNetApisForAngularProjects.Controllers
             return Ok(res);
         }
 
-        // GET api/homecuisine/ingredients
-        [HttpGet("ingredient-exists/{name}")]
-        [ProducesResponseType(typeof(IEnumerable<Boolean>), 200)]
-        public async Task<IActionResult> CheckIngredientExist(string name)
-        {
-            if (String.IsNullOrWhiteSpace(name)) {
-                var modelState = new ModelStateDictionary();
-                modelState.AddModelError("Name", "Ingredient name is null or white space.");
-                return BadRequest(modelState);
-            } else {
-                string trimLowercaseName = name.Trim().ToLower();
-                var res = await context.Ingredient.FirstOrDefaultAsync(item => item.Name.ToLower() == trimLowercaseName);
-                
-                return Ok( (res != null));
-            }
-        }
-
-
         // GET api/homecuisine/errors
         [HttpGet("errors")]
         [ProducesResponseType(typeof(IEnumerable<Error>), 200)]
@@ -80,6 +62,27 @@ namespace DotNetApisForAngularProjects.Controllers
             .ToListAsync();
             
             return Ok(res);
+        }
+
+        #endregion
+
+        #region CRUD -> READ -> CHECK (returns true/false)
+
+        // GET api/homecuisine/ingredient-exists/{IngredientName}
+        [HttpGet("ingredient-exists/{name}")]
+        [ProducesResponseType(typeof(IEnumerable<Boolean>), 200)]
+        public async Task<IActionResult> CheckIngredientExists(string name)
+        {
+            if (String.IsNullOrWhiteSpace(name)) {
+                var modelState = new ModelStateDictionary();
+                modelState.AddModelError("Name", "Ingredient name is null or white space.");
+                return BadRequest(modelState);
+            } else {
+                string trimLowercaseName = name.Trim().ToLower();
+                var res = await context.Ingredient.FirstOrDefaultAsync(item => item.Name.ToLower() == trimLowercaseName);
+                
+                return Ok( (res != null)); // true/false
+            }
         }
 
         #endregion
