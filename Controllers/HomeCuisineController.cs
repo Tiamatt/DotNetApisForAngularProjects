@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ModelBinding; // for ModelStateDictionary
 using DotNetApisForAngularProjects.HomeCuisineDbModels;
 
 namespace DotNetApisForAngularProjects.Controllers
@@ -51,6 +52,24 @@ namespace DotNetApisForAngularProjects.Controllers
             
             return Ok(res);
         }
+
+        // GET api/homecuisine/ingredients
+        [HttpGet("ingredient-exists/{name}")]
+        [ProducesResponseType(typeof(IEnumerable<Boolean>), 200)]
+        public async Task<IActionResult> CheckIngredientExist(string name)
+        {
+            if (String.IsNullOrWhiteSpace(name)) {
+                var modelState = new ModelStateDictionary();
+                modelState.AddModelError("Name", "Ingredient name is null or white space.");
+                return BadRequest(modelState);
+            } else {
+                string trimLowercaseName = name.Trim().ToLower();
+                var res = await context.Ingredient.FirstOrDefaultAsync(item => item.Name.ToLower() == trimLowercaseName);
+                
+                return Ok( (res != null));
+            }
+        }
+
 
         // GET api/homecuisine/errors
         [HttpGet("errors")]
