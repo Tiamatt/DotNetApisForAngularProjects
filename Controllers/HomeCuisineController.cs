@@ -69,9 +69,9 @@ namespace DotNetApisForAngularProjects.Controllers
         #region CRUD -> READ -> CHECK (returns true/false)
 
         // GET api/homecuisine/ingredient-exists/{IngredientName}
-        [HttpGet("ingredient-exists/{name}")]
+        [HttpGet("ingredient-unique/{name}")]
         [ProducesResponseType(typeof(IEnumerable<Boolean>), 200)]
-        public async Task<IActionResult> CheckIngredientExists(string name)
+        public async Task<IActionResult> CheckIngredientUniqueness(string name)
         {
             if (String.IsNullOrWhiteSpace(name)) {
                 var modelState = new ModelStateDictionary();
@@ -81,7 +81,7 @@ namespace DotNetApisForAngularProjects.Controllers
                 string trimLowercaseName = name.Trim().ToLower();
                 var res = await context.Ingredient.FirstOrDefaultAsync(item => item.Name.ToLower() == trimLowercaseName);
                 
-                return Ok( (res != null)); // true/false
+                return Ok( (res == null)); // true/false
             }
         }
 
