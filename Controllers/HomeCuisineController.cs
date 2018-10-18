@@ -107,6 +107,7 @@ namespace DotNetApisForAngularProjects.Controllers
         [Route("ingredient")]
         public async Task<IActionResult> CreateIngredient([FromBody]Ingredient model)
         {
+            model.Name = model.Name.Trim();
             context.Ingredient.Add(model);
             await context.SaveChangesAsync();
             return Ok(model);
