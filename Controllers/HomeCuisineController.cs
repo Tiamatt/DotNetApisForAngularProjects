@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ModelBinding; // for ModelStateDictionary
 using DotNetApisForAngularProjects.HomeCuisineDbModels;
+using DotNetApisForAngularProjects.HomeCuisineCustomModels;
 
 namespace DotNetApisForAngularProjects.Controllers
 {
@@ -29,27 +30,39 @@ namespace DotNetApisForAngularProjects.Controllers
             return new string[] { "HomeCuisine1", "HomeCuisine2", "HomeCuisine3" };
         }
 
-        // GET api/homecuisine/measures
-        [HttpGet("measures")]
-        [ProducesResponseType(typeof(IEnumerable<Measure>), 200)]
-        public async Task<IActionResult> GetMeasures()
-        {
-            var res = await context.Measure
-            .Where(x => x.Active == true)
-            .OrderBy(y=> y.Name)
-            .ToListAsync();
-
-            return Ok(res);
-        }
-
-        // GET api/homecuisine/ingredients
-        [HttpGet("ingredients")]
+        
+        // GET api/homecuisine/filters/{entityName}
+        [HttpGet("filter/{entityName}")]
         [ProducesResponseType(typeof(IEnumerable<Error>), 200)]
-        public async Task<IActionResult> GetIngredients()
+        public async Task<IActionResult> GetFilter(string entityName)
         {
-            var res = await context.Ingredient
-            .ToListAsync();
-            
+            // kali - refactor, use dynamic entity something like context.Set(typeof("Measure")) ...
+            object res = null;
+            switch(entityName) {
+                case "measure":
+                  res = await context.Measure
+                    .Where(x => x.Active == true)
+                    .Select(y => new FilterModel{
+                        name = y.Name,
+                        value = y.Id.ToString(),
+                        selected = false,
+                    })
+                    .OrderBy(y=> y.name)
+                    .ToListAsync();
+                  break;
+                case "ingredient":
+                  res = await context.Ingredient
+                    .Where(x => x.Active == true)
+                    .Select(y => new FilterModel{
+                        name = y.Name,
+                        value = y.Id.ToString(),
+                        selected = false,
+                    })
+                    .OrderBy(y=> y.name)
+                    .ToListAsync();
+                  break;
+            }
+
             return Ok(res);
         }
 
