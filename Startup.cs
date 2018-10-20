@@ -87,3 +87,7 @@ namespace DotNetApisForAngularProjects
 //     "HomeCuisineDbConn": "Data Source=SQL5037.site4now.net;Initial Catalog=DB_A41982_HomeCuisineDb;User Id=DB_A41982_HomeCuisineDb_admin;Password=H0meCu1s1ne62983;",
 //     "PapaJohnsCloneDbConn":  "Data Source=SQL5037.site4now.net;Initial Catalog=DB_A41982_PapaJohnsCloneDb;User Id=DB_A41982_PapaJohnsCloneDb_admin;Password=PapaJohns933455;"
 //   },
+
+/*
+dotnet ef dbcontext scaffold "Server=DESKTOP-O93KUA7\SQLEXPRESS;Database=HomeCuisineDb;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -o HomeCuisineDbModels --force
+ */
