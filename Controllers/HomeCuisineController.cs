@@ -131,9 +131,9 @@ namespace DotNetApisForAngularProjects.Controllers
         #region CRUD -> READ -> CHECK (returns true/false)
 
         // GET api/homecuisine/ingredient-exists/{IngredientName}
-        [HttpGet("ingredient-unique/{name}")]
+        [HttpGet("ingredient-unique/{name}/{excludedIngredientId}")]
         [ProducesResponseType(typeof(IEnumerable<Boolean>), 200)]
-        public async Task<IActionResult> CheckIngredientUniqueness(string name)
+        public async Task<IActionResult> CheckIngredientUniqueness(string name, int excludedIngredientId)
         {
             if (String.IsNullOrWhiteSpace(name)) {
                 var modelState = new ModelStateDictionary();
@@ -141,16 +141,18 @@ namespace DotNetApisForAngularProjects.Controllers
                 return BadRequest(modelState);
             } else {
                 string trimLowercaseName = name.Trim().ToLower();
-                var res = await context.Ingredient.FirstOrDefaultAsync(item => item.Name.ToLower() == trimLowercaseName);
+                var res = await context.Ingredient
+                .Where(x => excludedIngredientId < 1 || x.Id != excludedIngredientId)
+                .FirstOrDefaultAsync(item => item.Name.ToLower() == trimLowercaseName);
                 
                 return Ok( (res == null)); // true/false
             }
         }
 
         // GET api/homecuisine/recipe-exists/{IngredientName}
-        [HttpGet("recipe-unique/{name}")]
-        [ProducesResponseType(typeof(IEnumerable<Boolean>), 200)]
-        public async Task<IActionResult> CheckRecipeUniqueness(string name)
+        [HttpGet("recipe-unique/{name}/{excludedRecipeId}")]
+        [ProducesResponseType(typeof(IEnumerable<String>), 200)]
+        public async Task<IActionResult> CheckRecipeUniqueness(string name, int excludedRecipeId)
         {
             if (String.IsNullOrWhiteSpace(name)) {
                 var modelState = new ModelStateDictionary();
@@ -158,9 +160,11 @@ namespace DotNetApisForAngularProjects.Controllers
                 return BadRequest(modelState);
             } else {
                 string trimLowercaseName = name.Trim().ToLower();
-                var res = await context.Recipe.FirstOrDefaultAsync(item => item.Name.ToLower() == trimLowercaseName);
-                
+                var res = await context.Recipe
+                .Where(x => excludedRecipeId < 1 || x.Id != excludedRecipeId)
+                .FirstOrDefaultAsync(item => item.Name.ToLower() == trimLowercaseName);
                 return Ok( (res == null)); // true/false
+
             }
         }
 
