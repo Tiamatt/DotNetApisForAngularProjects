@@ -147,6 +147,23 @@ namespace DotNetApisForAngularProjects.Controllers
             }
         }
 
+        // GET api/homecuisine/recipe-exists/{IngredientName}
+        [HttpGet("recipe-unique/{name}")]
+        [ProducesResponseType(typeof(IEnumerable<Boolean>), 200)]
+        public async Task<IActionResult> CheckRecipeUniqueness(string name)
+        {
+            if (String.IsNullOrWhiteSpace(name)) {
+                var modelState = new ModelStateDictionary();
+                modelState.AddModelError("Name", "Recipe name is null or white space.");
+                return BadRequest(modelState);
+            } else {
+                string trimLowercaseName = name.Trim().ToLower();
+                var res = await context.Recipe.FirstOrDefaultAsync(item => item.Name.ToLower() == trimLowercaseName);
+                
+                return Ok( (res == null)); // true/false
+            }
+        }
+
         #endregion
 
         #region CRUD -> CREATE
