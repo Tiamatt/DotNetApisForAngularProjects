@@ -107,6 +107,7 @@ namespace DotNetApisForAngularProjects.Controllers
                 ingredientModel.amount = recipeIngredientMeasure.Amount;
                 ingredientModel.measureName = measure.Name;
                 ingredientModel.measureValue = measure.Id.ToString();
+                ingredientModel.flag = false;
 
                 ingredientModels.Add(ingredientModel);
             }

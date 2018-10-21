@@ -8,5 +8,6 @@ namespace DotNetApisForAngularProjects.HomeCuisineCustomModels
         public string amount {get; set;}
         public string measureName {get; set;}
         public string measureValue {get; set;}
+        public bool? flag {get; set;}
     }
 }
