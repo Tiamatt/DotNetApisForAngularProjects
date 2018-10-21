@@ -235,5 +235,47 @@ namespace DotNetApisForAngularProjects.Controllers
         }
 
         #endregion
+
+
+        #region CRUD -> UPDATE
+
+        [HttpPut]
+        [Route("recipe/{recipeId}")]
+        public async Task<IActionResult> UpdateRecipe(int recipeId, [FromBody]RecipeModel model)
+        {
+            // update Recipe
+            Recipe recipe = await context.Recipe.SingleOrDefaultAsync(x => x.Id == recipeId);
+            if(recipe == null) {
+                return NotFound("Not Found Recipe");
+            }
+            recipe.Name = model.name;
+            context.Recipe.Update(recipe);
+
+            // update RecipeFrontImage
+            RecipeFrontImage recipeFrontImage  = await context.RecipeFrontImage.SingleOrDefaultAsync(x => x.Recipe == recipeId);
+            if(recipeFrontImage == null) {
+                return NotFound("Not Found Recipe Front Image");
+            }
+            recipeFrontImage.FrontImage = FileHelper.EncodeString(model.frontImage);
+            context.RecipeFrontImage.Update(recipeFrontImage);
+
+            // delete old RecipeIngredientMeasures
+            var recipeIngredientMeasures = await context.RecipeIngredientMeasure.Where(x => x.Recipe == recipeId).ToListAsync();
+            context.RecipeIngredientMeasure.RemoveRange(recipeIngredientMeasures);
+            // create multiple RecipeIngredientMeasure
+            foreach(IngredientModel ingredient in model.ingredients) {
+                RecipeIngredientMeasure recipeIngredientMeasure = new RecipeIngredientMeasure();
+                recipeIngredientMeasure.Ingredient = Int32.Parse(ingredient.ingredientValue);
+                recipeIngredientMeasure.Amount = ingredient.amount;
+                recipeIngredientMeasure.Measure = Int32.Parse(ingredient.measureValue);
+                recipeIngredientMeasure.RecipeNavigation = recipe;
+                context.RecipeIngredientMeasure.Add(recipeIngredientMeasure);
+            }
+
+            await context.SaveChangesAsync();
+            return Ok(recipe.Id);
+        }
+
+        #endregion
     }
 }
