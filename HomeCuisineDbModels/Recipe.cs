@@ -7,17 +7,21 @@ namespace DotNetApisForAngularProjects.HomeCuisineDbModels
     {
         public Recipe()
         {
+            RecipeCategory = new HashSet<RecipeCategory>();
+            RecipeDirection = new HashSet<RecipeDirection>();
             RecipeFrontImage = new HashSet<RecipeFrontImage>();
             RecipeIngredientMeasure = new HashSet<RecipeIngredientMeasure>();
-            RecipeSteps = new HashSet<RecipeSteps>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         public bool? Active { get; set; }
+        public int PreparationTime { get; set; }
+        public int Servings { get; set; }
 
+        public ICollection<RecipeCategory> RecipeCategory { get; set; }
+        public ICollection<RecipeDirection> RecipeDirection { get; set; }
         public ICollection<RecipeFrontImage> RecipeFrontImage { get; set; }
         public ICollection<RecipeIngredientMeasure> RecipeIngredientMeasure { get; set; }
-        public ICollection<RecipeSteps> RecipeSteps { get; set; }
     }
 }

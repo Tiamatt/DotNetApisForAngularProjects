@@ -114,15 +114,14 @@ namespace DotNetApisForAngularProjects.Controllers
             recipeModel.ingredients = ingredientModels;
 
 
-            // get RecipeSteps
+            // get RecipeDirection
             List<DirectionModel> directionModels = new List<DirectionModel>();
-            var steps = await context.RecipeSteps.Where(x => x.Recipe == id).ToListAsync();
-            foreach(var step in steps) {
+            var recipeDirections = await context.RecipeDirection.Where(x => x.Recipe == id).ToListAsync();
+            foreach(var recipeDirection in recipeDirections) {
                 DirectionModel directionModel = new DirectionModel();
                 directionModel.id = Guid.NewGuid().ToString();
-                directionModel.sortNumber = step.Sort;
-                directionModel.description = step.Step;
-
+                directionModel.sortNumber = recipeDirection.Sort;
+                directionModel.description = recipeDirection.Direction;
                 directionModels.Add(directionModel);
             }
             recipeModel.directions = directionModels;
@@ -237,11 +236,11 @@ namespace DotNetApisForAngularProjects.Controllers
 
             // create multiple RecipeIngredientMeasure
             foreach(DirectionModel direction in model.directions) {
-                RecipeSteps recipeSteps = new RecipeSteps();
-                recipeSteps.Sort = direction.sortNumber;
-                recipeSteps.Step = direction.description.Trim();
-                recipeSteps.RecipeNavigation = recipe;
-                context.RecipeSteps.Add(recipeSteps);
+                RecipeDirection recipeDirection = new RecipeDirection();
+                recipeDirection.Sort = direction.sortNumber;
+                recipeDirection.Direction = direction.description.Trim();
+                recipeDirection.RecipeNavigation = recipe;
+                context.RecipeDirection.Add(recipeDirection);
             }
 
             await context.SaveChangesAsync();
@@ -296,16 +295,16 @@ namespace DotNetApisForAngularProjects.Controllers
                 context.RecipeIngredientMeasure.Add(recipeIngredientMeasure);
             }
 
-            // delete old RecipeSteps
-            var recipeSteps = await context.RecipeSteps.Where(x => x.Recipe == recipeId).ToListAsync();
-            context.RecipeSteps.RemoveRange(recipeSteps);
-            // create multiple RecipeSteps
+            // delete old RecipeDirections
+            var recipeDirections = await context.RecipeDirection.Where(x => x.Recipe == recipeId).ToListAsync();
+            context.RecipeDirection.RemoveRange(recipeDirections);
+            // create multiple RecipeDirections
             foreach(DirectionModel direction in model.directions) {
-                RecipeSteps recipeStep = new RecipeSteps();
-                recipeStep.Sort = direction.sortNumber;
-                recipeStep.Step = direction.description.Trim();
-                recipeStep.RecipeNavigation = recipe;
-                context.RecipeSteps.Add(recipeStep);
+                RecipeDirection recipeDirection = new RecipeDirection();
+                recipeDirection.Sort = direction.sortNumber;
+                recipeDirection.Direction = direction.description.Trim();
+                recipeDirection.RecipeNavigation = recipe;
+                context.RecipeDirection.Add(recipeDirection);
             }
 
             await context.SaveChangesAsync();
