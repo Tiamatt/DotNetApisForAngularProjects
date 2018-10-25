@@ -85,6 +85,8 @@ namespace DotNetApisForAngularProjects.Controllers
             }
             recipeModel.id = recipe.Id;
             recipeModel.name = recipe.Name;
+            recipeModel.preparationTime = recipe.PreparationTime;
+            recipeModel.servings = recipe.Servings;
 
             // get RecipeFrontImage
             RecipeFrontImage recipeFrontImage = await context.RecipeFrontImage.Where(x => x.Recipe == id).FirstOrDefaultAsync();
@@ -202,20 +204,16 @@ namespace DotNetApisForAngularProjects.Controllers
         [Route("recipe")]
         public async Task<IActionResult> CreateRecipe([FromBody]RecipeModel model)
         {
-            if( String.IsNullOrWhiteSpace(model.name)) {
-                return BadRequest("Recipe name required");
+            string recipeError = ValidateRecipe(model);
+            if ( !String.IsNullOrEmpty(recipeError)) {
+                return BadRequest(recipeError);
             }
-            if( model.name.Length < 3) {
-                return BadRequest("Recipe name should have at least 3 characters");
-            }
-            if( String.IsNullOrWhiteSpace(model.frontImage)) {
-                return BadRequest("Front image required");
-            }
-            // Note: recipe name uniqueness handles by DB
 
             // create Recipe
             Recipe recipe = new Recipe();
             recipe.Name = model.name;
+            recipe.PreparationTime = model.preparationTime;
+            recipe.Servings = model.servings;
             context.Recipe.Add(recipe);
 
             // create RecipeFrontImage
@@ -266,6 +264,11 @@ namespace DotNetApisForAngularProjects.Controllers
         [Route("recipe/{recipeId}")]
         public async Task<IActionResult> UpdateRecipe(int recipeId, [FromBody]RecipeModel model)
         {
+            string recipeError = ValidateRecipe(model);
+            if ( !String.IsNullOrEmpty(recipeError)) {
+                return BadRequest(recipeError);
+            }
+
             // update Recipe
             Recipe recipe = await context.Recipe.SingleOrDefaultAsync(x => x.Id == recipeId);
             if(recipe == null) {
@@ -309,6 +312,33 @@ namespace DotNetApisForAngularProjects.Controllers
 
             await context.SaveChangesAsync();
             return Ok(recipe.Id);
+        }
+
+        #endregion
+    
+        #region private RE-USABLE methods 
+        
+        private string ValidateRecipe(RecipeModel model) {
+
+            // Note: recipe name uniqueness handles by DB
+
+            if( String.IsNullOrWhiteSpace(model.name)) {
+                return "Recipe name required";
+            }
+            if( model.name.Length < 3) {
+                return"Recipe name should have at least 3 characters";
+            }
+            if( String.IsNullOrWhiteSpace(model.frontImage)) {
+                return "Front image required";
+            }
+            if(model.preparationTime < 1) {
+                return"Preparation time can't be less than 1";
+            }
+            if(model.servings < 1) {
+                return"Servings can't be less than 1 ";
+            }
+
+            return null; // no error
         }
 
         #endregion
