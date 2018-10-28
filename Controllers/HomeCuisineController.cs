@@ -63,6 +63,18 @@ namespace DotNetApisForAngularProjects.Controllers
                     .OrderBy(y=> y.name)
                     .ToListAsync();
                   break;
+                case "category":
+                  res = await context.Category
+                    .Where(x => x.Active == true)
+                    .Select(y => new FilterModel{
+                        name = y.Name,
+                        value = y.Id.ToString(),
+                        selected = false,
+                    })
+                    .OrderBy(y=> y.name)
+                    .ToListAsync();
+                  break;    
+
             }
 
             if(res ==null){
