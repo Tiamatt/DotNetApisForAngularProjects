@@ -13,5 +13,7 @@ namespace DotNetApisForAngularProjects.HomeCuisineCustomModels
         public string frontImage {get; set;}
         public List<IngredientModel> ingredients {get; set;}
         public List<DirectionModel> directions {get;set;}
+
+        public List<FilterModel> categories {get;set;}
     }
 }

@@ -33,7 +33,7 @@ namespace DotNetApisForAngularProjects.Controllers
         }
 
         
-        // GET api/homecuisine/filters/{entityName}
+        // GET api/homecuisine/filter/{entityName}
         [HttpGet("filter/{entityName}")]
         [ProducesResponseType(typeof(IEnumerable<Error>), 200)]
         public async Task<IActionResult> GetFilter(string entityName)
@@ -140,6 +140,18 @@ namespace DotNetApisForAngularProjects.Controllers
             }
             recipeModel.directions = directionModels;
 
+            // get RecipeCategory
+            List<FilterModel> categoryModels = new List<FilterModel>();
+            var recipeCategories = await context.RecipeCategory.Where(x => x.Recipe == id).ToListAsync();
+            var categories = await context.Category.ToListAsync();
+            foreach(var recipeCategory in recipeCategories) {
+                FilterModel categoryModel = new FilterModel();
+                categoryModel.value = recipeCategory.Category.ToString();
+                categoryModel.name = categories.Where(x => x.Id == recipeCategory.Category).Select(x => x.Name).FirstOrDefault();
+                categoryModels.Add(categoryModel);
+            }
+            recipeModel.categories = categoryModels;
+ 
             return Ok(recipeModel);
         }
 
@@ -253,6 +265,14 @@ namespace DotNetApisForAngularProjects.Controllers
                 context.RecipeDirection.Add(recipeDirection);
             }
 
+            // create multiple RecipeCategory
+            foreach(FilterModel category in model.categories) {
+                RecipeCategory recipeCategory = new RecipeCategory();
+                recipeCategory.Category = Int32.Parse(category.value);
+                recipeCategory.RecipeNavigation = recipe;
+                context.RecipeCategory.Add(recipeCategory);
+            }
+
             await context.SaveChangesAsync();
             return Ok(recipe.Id);
         }
@@ -320,6 +340,17 @@ namespace DotNetApisForAngularProjects.Controllers
                 recipeDirection.Direction = direction.description.Trim();
                 recipeDirection.RecipeNavigation = recipe;
                 context.RecipeDirection.Add(recipeDirection);
+            }
+
+            // delete old RecipeCategory
+            var recipeCategories = await context.RecipeCategory.Where(x => x.Recipe == recipeId).ToListAsync();
+            context.RecipeCategory.RemoveRange(recipeCategories);
+            // create multiple RecipeCategory
+            foreach(FilterModel category in model.categories) {
+                RecipeCategory recipeCategory = new RecipeCategory();
+                recipeCategory.Category = Int32.Parse(category.value);
+                recipeCategory.RecipeNavigation = recipe;
+                context.RecipeCategory.Add(recipeCategory);
             }
 
             await context.SaveChangesAsync();
