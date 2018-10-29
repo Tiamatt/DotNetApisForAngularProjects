@@ -170,7 +170,7 @@ namespace DotNetApisForAngularProjects.Controllers
 
         #region CRUD -> READ -> CHECK (returns true/false)
 
-        // GET api/homecuisine/ingredient-exists/{IngredientName}
+
         [HttpGet("ingredient-unique/{name}/{excludedIngredientId}")]
         [ProducesResponseType(typeof(IEnumerable<Boolean>), 200)]
         public async Task<IActionResult> CheckIngredientUniqueness(string name, int excludedIngredientId)
@@ -189,7 +189,26 @@ namespace DotNetApisForAngularProjects.Controllers
             }
         }
 
-        // GET api/homecuisine/recipe-exists/{IngredientName}
+
+        [HttpGet("category-unique/{name}/{excludedCategoryId}")]
+        [ProducesResponseType(typeof(IEnumerable<Boolean>), 200)]
+        public async Task<IActionResult> CheckCategoryUniqueness(string name, int excludedCategoryId)
+        {
+            if (String.IsNullOrWhiteSpace(name)) {
+                var modelState = new ModelStateDictionary();
+                modelState.AddModelError("Name", "Category name is null or white space.");
+                return BadRequest(modelState);
+            } else {
+                string trimLowercaseName = name.Trim().ToLower();
+                var res = await context.Category
+                .Where(x => excludedCategoryId < 1 || x.Id != excludedCategoryId)
+                .FirstOrDefaultAsync(item => item.Name.ToLower() == trimLowercaseName);
+                
+                return Ok( (res == null)); // true/false
+            }
+        }
+
+
         [HttpGet("recipe-unique/{name}/{excludedRecipeId}")]
         [ProducesResponseType(typeof(IEnumerable<String>), 200)]
         public async Task<IActionResult> CheckRecipeUniqueness(string name, int excludedRecipeId)
@@ -221,6 +240,18 @@ namespace DotNetApisForAngularProjects.Controllers
             context.Ingredient.Add(model);
             await context.SaveChangesAsync();
             return Ok(model);
+        }
+
+        // POST api/homecuisine/category
+        [HttpPost]
+        [Route("category")]
+        public async Task<IActionResult> CreateCategory([FromBody]FilterModel model)
+        {
+            Category newCategory = new Category();
+            newCategory.Name = model.name.Trim();
+            context.Category.Add(newCategory);
+            await context.SaveChangesAsync();
+            return Ok(newCategory);
         }
 
         // POST api/homecuisine/recipe
