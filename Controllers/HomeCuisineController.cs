@@ -23,7 +23,6 @@ namespace DotNetApisForAngularProjects.Controllers
             this.context = _context;
         }
 
-        #region CRUD -> READ -> GET LIST (returns list of items)
 
         // GET api/homecuisine
         [HttpGet] // for testing
@@ -32,58 +31,7 @@ namespace DotNetApisForAngularProjects.Controllers
             return new string[] { "HomeCuisine1", "HomeCuisine2", "HomeCuisine3" };
         }
 
-        
-        // GET api/homecuisine/filter/{entityName}
-        [HttpGet("filter/{entityName}")]
-        [ProducesResponseType(typeof(IEnumerable<Error>), 200)]
-        public async Task<IActionResult> GetFilter(string entityName)
-        {
-            // kali - refactor, use dynamic entity something like context.Set(typeof("Measure")) ...
-            object res = null;
-            switch(entityName) {
-                case "measure":
-                  res = await context.Measure
-                    .Where(x => x.Active == true)
-                    .Select(y => new FilterModel{
-                        name = y.Name,
-                        value = y.Id.ToString(),
-                        selected = false,
-                    })
-                    .OrderBy(y=> y.name)
-                    .ToListAsync();
-                  break;
-                case "ingredient":
-                  res = await context.Ingredient
-                    .Where(x => x.Active == true)
-                    .Select(y => new FilterModel{
-                        name = y.Name,
-                        value = y.Id.ToString(),
-                        selected = false,
-                    })
-                    .OrderBy(y=> y.name)
-                    .ToListAsync();
-                  break;
-                case "category":
-                  res = await context.Category
-                    .Where(x => x.Active == true)
-                    .Select(y => new FilterModel{
-                        name = y.Name,
-                        value = y.Id.ToString(),
-                        selected = false,
-                    })
-                    .OrderBy(y=> y.name)
-                    .ToListAsync();
-                  break;    
-
-            }
-
-            if(res ==null){
-                NotFound();
-            }
-
-            return Ok(res);
-        }
-
+        #region CRUD -> READ -> GET SINGLE ITEM BY id
 
         [HttpGet("recipe/{id}")]
         [ProducesResponseType(typeof(RecipeModel), 200)]
@@ -153,6 +101,87 @@ namespace DotNetApisForAngularProjects.Controllers
             recipeModel.categories = categoryModels;
  
             return Ok(recipeModel);
+        }
+
+        #endregion
+
+        #region CRUD -> READ -> GET LIST (returns list of items)
+
+        // GET api/homecuisine/filter/{entityName}
+        [HttpGet("filters/{entityName}")]
+        [ProducesResponseType(typeof(IEnumerable<FilterModel>), 200)]
+        public async Task<IActionResult> GetFilters(string entityName)
+        {
+            // kali - refactor, use dynamic entity something like context.Set(typeof("Measure")) ...
+            object res = null;
+            switch(entityName) {
+                case "measure":
+                  res = await context.Measure
+                    .Where(x => x.Active == true)
+                    .Select(y => new FilterModel{
+                        name = y.Name,
+                        value = y.Id.ToString(),
+                        selected = false,
+                    })
+                    .OrderBy(y=> y.name)
+                    .ToListAsync();
+                  break;
+                case "ingredient":
+                  res = await context.Ingredient
+                    .Where(x => x.Active == true)
+                    .Select(y => new FilterModel{
+                        name = y.Name,
+                        value = y.Id.ToString(),
+                        selected = false,
+                    })
+                    .OrderBy(y=> y.name)
+                    .ToListAsync();
+                  break;
+                case "category":
+                  res = await context.Category
+                    .Where(x => x.Active == true)
+                    .Select(y => new FilterModel{
+                        name = y.Name,
+                        value = y.Id.ToString(),
+                        selected = false,
+                    })
+                    .OrderBy(y=> y.name)
+                    .ToListAsync();
+                  break;    
+
+            }
+
+            if(res ==null){
+                NotFound();
+            }
+
+            return Ok(res);
+        }
+
+
+        [HttpGet("recipes/{categoryId}")]
+        // [ProducesResponseType(typeof(IEnumerable<RecipeShortModel>), 200)]
+        public async Task<IActionResult> GetRecipesByCategory(int categoryId){
+            List<RecipeShortModel> recipeShortModels = new List<RecipeShortModel>();
+            
+            List<int> recipeIds = await context.RecipeCategory
+            .Where(a => a.Category == categoryId)
+            .Select(b => b.Recipe)
+            .ToListAsync();
+
+            recipeShortModels = await context.Recipe
+            .Join(context.RecipeFrontImage, r => r.Id, rfi => rfi.Recipe, (r, rfi) => new RecipeShortModel{
+                id = r.Id,
+                name = r.Name,
+                preparationTime = r.PreparationTime,
+                servings = r.Servings,
+                countIngredients = context.RecipeIngredientMeasure.Where(i => i.Recipe == r.Id).Count(),
+                frontImage = FileHelper.DecodeString(rfi.FrontImage), 
+            })
+            .Where(a => recipeIds.IndexOf(a.id) > -1)
+            .ToListAsync();
+
+            return Ok(recipeShortModels);
         }
 
         // GET api/homecuisine/errors
