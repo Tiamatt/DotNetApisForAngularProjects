@@ -103,6 +103,13 @@ namespace DotNetApisForAngularProjects.Controllers
             return Ok(recipeModel);
         }
 
+        [HttpGet("category/{id}")]
+        [ProducesResponseType(typeof(Category), 200)]
+        public async Task<IActionResult> GetCategory(int id) {
+            Category category = await context.Category.Where(c => c.Id == id).FirstOrDefaultAsync();
+            return Ok(category);
+        }
+
         #endregion
 
         #region CRUD -> READ -> GET LIST (returns list of items)
